@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">arch26</string>
+    <string name="edit">Edit</string>
+    <string name="decrement">Decrement</string>
+    <string name="increment">Increment</string>
+    <string name="current_count">Current count: %1$d</string>
+</resources>
