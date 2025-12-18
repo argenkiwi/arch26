@@ -20,6 +20,7 @@ import androidx.navigation3.ui.NavDisplay
 import app.cash.molecule.AndroidUiDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
+import org.koin.core.component.KoinComponent
 
 @Serializable
 sealed interface Route {
@@ -27,7 +28,7 @@ sealed interface Route {
     data class Edit(val count: Int) : Route
 }
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), KoinComponent {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

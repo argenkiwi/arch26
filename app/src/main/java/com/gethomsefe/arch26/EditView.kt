@@ -1,6 +1,5 @@
 package com.gethomsefe.arch26
 
-import android.content.ComponentCallbacks
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,7 +19,8 @@ import app.cash.molecule.AndroidUiDispatcher
 import app.cash.molecule.RecompositionMode
 import app.cash.molecule.launchMolecule
 import kotlinx.coroutines.CoroutineScope
-import org.koin.android.ext.android.get
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
 object EditView {
     sealed interface Effect {
@@ -29,7 +29,7 @@ object EditView {
     }
 
     @Composable
-    context(scope: CoroutineScope, koin: ComponentCallbacks)
+    context(scope: CoroutineScope, koin: KoinComponent)
     fun Pane(modifier: Modifier, count: Int, produce: (Effect) -> Unit) {
         val present = retain { koin.get<EditModel.Presenter>() }
         val stateFlow = retain(count) {
