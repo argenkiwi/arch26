@@ -11,14 +11,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.retain.retain
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
-import app.cash.molecule.AndroidUiDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 
@@ -34,48 +31,46 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         enableEdgeToEdge()
         setContent {
             Scaffold { paddingValues ->
-                context(retain { CoroutineScope(AndroidUiDispatcher.Main) }) {
-                    var count by rememberSaveable { mutableIntStateOf(0) }
-                    val backStack = remember { mutableStateListOf<Route>(Route.Display) }
-                    NavDisplay(
-                        backStack,
-                        onBack = { backStack.removeLastOrNull() },
-                        entryProvider = { route ->
-                            when (route) {
-                                Route.Display -> NavEntry(route) {
-                                    DisplayView.Pane(
-                                        Modifier
-                                            .fillMaxSize()
-                                            .padding(paddingValues),
-                                        count
-                                    ) {
-                                        when (it) {
-                                            DisplayView.Effect.Edit -> Route.Edit(count)
-                                                .also(backStack::add)
-                                        }
+                var count by rememberSaveable { mutableIntStateOf(0) }
+                val backStack = remember { mutableStateListOf<Route>(Route.Display) }
+                NavDisplay(
+                    backStack,
+                    onBack = { backStack.removeLastOrNull() },
+                    entryProvider = { route ->
+                        when (route) {
+                            Route.Display -> NavEntry(route) {
+                                DisplayView.Pane(
+                                    count,
+                                    Modifier
+                                        .fillMaxSize()
+                                        .padding(paddingValues)
+                                ) {
+                                    when (it) {
+                                        DisplayView.Effect.Edit -> Route.Edit(count)
+                                            .also(backStack::add)
                                     }
                                 }
+                            }
 
-                                is Route.Edit -> NavEntry(route) {
-                                    EditView.Pane(
-                                        Modifier
-                                            .fillMaxSize()
-                                            .padding(paddingValues),
-                                        route.count
-                                    ) { effect ->
-                                        when (effect) {
-                                            EditView.Effect.Cancel -> backStack.removeLastOrNull()
-                                            is EditView.Effect.Save -> {
-                                                count = effect.count
-                                                backStack.removeLastOrNull()
-                                            }
+                            is Route.Edit -> NavEntry(route) {
+                                EditView.Pane(
+                                    route.count,
+                                    Modifier
+                                        .fillMaxSize()
+                                        .padding(paddingValues)
+                                ) { effect ->
+                                    when (effect) {
+                                        EditView.Effect.Cancel -> backStack.removeLastOrNull()
+                                        is EditView.Effect.Save -> {
+                                            count = effect.count
+                                            backStack.removeLastOrNull()
                                         }
                                     }
                                 }
                             }
                         }
-                    )
-                }
+                    }
+                )
             }
         }
     }

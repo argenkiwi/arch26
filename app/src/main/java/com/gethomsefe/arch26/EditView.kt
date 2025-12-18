@@ -29,8 +29,13 @@ object EditView {
     }
 
     @Composable
-    context(scope: CoroutineScope, koin: KoinComponent)
-    fun Pane(modifier: Modifier, count: Int, produce: (Effect) -> Unit) {
+    context(koin: KoinComponent)
+    fun Pane(
+        count: Int,
+        modifier: Modifier = Modifier,
+        scope: CoroutineScope = retain { CoroutineScope(AndroidUiDispatcher.Main) },
+        produce: (Effect) -> Unit
+    ) {
         val present = retain { koin.get<EditModel.Presenter>() }
         val stateFlow = retain(count) {
             scope.launchMolecule(

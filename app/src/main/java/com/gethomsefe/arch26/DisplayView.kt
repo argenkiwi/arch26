@@ -18,7 +18,7 @@ object DisplayView {
     }
 
     @Composable
-    fun Pane(modifier: Modifier, count: Int, produce: (Effect) -> Unit) {
+    fun Pane(count: Int, modifier: Modifier = Modifier, produce: (Effect) -> Unit) {
         Column(
             modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
