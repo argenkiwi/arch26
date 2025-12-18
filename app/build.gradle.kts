@@ -59,7 +59,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    val composeBom = platform("androidx.compose:compose-bom:2025.12.00")
+    val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
     implementation(libs.androidx.material3)
@@ -70,7 +70,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
-    implementation("app.cash.molecule:molecule-runtime:2.2.0")
+    implementation(libs.app.cash.molecule.runtime)
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.kotlinx.serialization.core)

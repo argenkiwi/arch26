@@ -13,8 +13,11 @@ activity = "1.12.2"
 nav3Core = "1.0.0"
 kotlinSerialization = "2.2.21"
 kotlinxSerializationCore = "1.9.0"
+compose-bom = "2025.12.00"
+molecule = "2.2.0"
 
 [libraries]
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-material3 = { module = "androidx.compose.material3:material3" }
@@ -33,6 +36,7 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
 koin-android = { module = "io.insert-koin:koin-android" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
+app-cash-molecule-runtime = { module = "app.cash.molecule:molecule-runtime", version.ref = "molecule" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
