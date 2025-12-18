@@ -8,46 +8,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.retain.retain
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import app.cash.molecule.AndroidUiDispatcher
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.launchMolecule
-import kotlinx.coroutines.CoroutineScope
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 
 object EditView {
     sealed interface Effect {
         data class Save(val count: Int) : Effect
         data object Cancel : Effect
-    }
-
-    @Composable
-    context(koin: KoinComponent)
-    fun Pane(
-        count: Int,
-        modifier: Modifier = Modifier,
-        scope: CoroutineScope = retain { CoroutineScope(AndroidUiDispatcher.Main) },
-        produce: (Effect) -> Unit
-    ) {
-        val present = retain { koin.get<EditModel.Presenter>() }
-        val stateFlow = retain(count) {
-            scope.launchMolecule(
-                mode = RecompositionMode.ContextClock,
-                context = AndroidUiDispatcher.Main
-            ) {
-                present(count)
-            }
-        }
-
-        val state by stateFlow.collectAsStateWithLifecycle()
-        Pane(modifier, state, produce)
     }
 
     @Composable

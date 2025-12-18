@@ -5,7 +5,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import org.koin.dsl.module
 
 object EditModel {
     sealed interface Action {
@@ -31,7 +30,4 @@ object EditModel {
             }
         }
     }
-
-    val module
-        get() = module { factory { Presenter() } }
 }

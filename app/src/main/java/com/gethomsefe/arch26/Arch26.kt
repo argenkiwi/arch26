@@ -9,7 +9,7 @@ class Arch26 : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@Arch26)
-            modules(EditModel.module)
+            modules(EditKoin.module)
         }
     }
 }

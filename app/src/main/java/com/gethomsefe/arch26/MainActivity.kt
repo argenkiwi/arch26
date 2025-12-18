@@ -54,10 +54,10 @@ class MainActivity : AppCompatActivity(), KoinComponent {
 
                             is Route.Edit -> NavEntry(route) {
                                 EditView.Pane(
-                                    route.count,
                                     Modifier
                                         .fillMaxSize()
-                                        .padding(paddingValues)
+                                        .padding(paddingValues),
+                                    EditKoin.state(route.count)
                                 ) { effect ->
                                     when (effect) {
                                         EditView.Effect.Cancel -> backStack.removeLastOrNull()
