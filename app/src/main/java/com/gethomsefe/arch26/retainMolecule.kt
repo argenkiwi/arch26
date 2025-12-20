@@ -5,7 +5,6 @@ import androidx.compose.runtime.retain.retain
 import app.cash.molecule.RecompositionMode
 import app.cash.molecule.launchMolecule
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 context(scope: CoroutineScope)

@@ -7,14 +7,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
 object EditModel {
-    sealed interface Action {
-        data object Increment : Action
-        data object Decrement : Action
+    interface Actions {
+        fun increment()
+        fun decrement()
     }
 
     data class State(
         val count: Int,
-        val perform: (Action) -> Unit
+        val actions: Actions
     )
 
     class Presenter {
@@ -22,12 +22,10 @@ object EditModel {
         @Composable
         operator fun invoke(initialCount: Int): State {
             var count by remember { mutableIntStateOf(initialCount) }
-            return State(count) { action ->
-                when (action) {
-                    Action.Decrement -> count--
-                    Action.Increment -> count++
-                }
-            }
+            return State(count, object : Actions {
+                override fun increment() { count++ }
+                override fun decrement() { count-- }
+            })
         }
     }
 }

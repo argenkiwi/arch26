@@ -14,36 +14,36 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 object EditView {
-    sealed interface Effect {
-        data class Save(val count: Int) : Effect
-        data object Cancel : Effect
+    interface Effects {
+        fun save(count: Int)
+        fun cancel()
     }
 
     @Composable
-    fun Pane(modifier: Modifier, state: EditModel.State, produce: (Effect) -> Unit) {
+    fun Pane(modifier: Modifier, state: EditModel.State, effects: Effects) {
         Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(Modifier.weight(1f))
             Text(text = stringResource(R.string.current_count, state.count))
             Spacer(Modifier.height(8.dp))
             Row {
-                Button(onClick = { state.perform(EditModel.Action.Decrement) }) {
+                Button(onClick = { state.actions.decrement() }) {
                     Text(text = stringResource(R.string.decrement))
                 }
 
                 Spacer(Modifier.width(8.dp))
-                Button(onClick = { state.perform(EditModel.Action.Increment) }) {
+                Button(onClick = { state.actions.increment() }) {
                     Text(text = stringResource(R.string.increment))
                 }
             }
 
             Spacer(Modifier.weight(1f))
             Row {
-                Button({ produce(Effect.Cancel) }) {
+                Button({ effects.cancel() }) {
                     Text(stringResource(android.R.string.cancel))
                 }
 
                 Spacer(Modifier.width(8.dp))
-                Button({ produce(Effect.Save(state.count)) }) {
+                Button({ effects.save(state.count) }) {
                     Text(stringResource(android.R.string.ok))
                 }
             }
