@@ -9,18 +9,10 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 context(scope: CoroutineScope)
-inline fun <reified P, T> retainMolecule(
-    noinline presenter: () -> P,
-    crossinline present: @Composable (P) -> T,
-    vararg keys: Any?
-): StateFlow<T> {
-    val presenter = retain(presenter)
-    return retain(*keys) {
-        scope.launchMolecule(
-            mode = RecompositionMode.ContextClock,
-            context = scope.coroutineContext
-        ) {
-            present(presenter)
-        }
-    }
+fun <T> retainMolecule(vararg keys: Any?, body: @Composable () -> T) = retain(*keys) {
+    scope.launchMolecule(
+        mode = RecompositionMode.ContextClock,
+        context = scope.coroutineContext,
+        body = body
+    )
 }

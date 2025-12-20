@@ -2,6 +2,7 @@ package com.gethomsefe.arch26
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.retain.retain
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.component.KoinComponent
@@ -15,11 +16,9 @@ object EditKoin {
     @Composable
     context(scope: CoroutineScope, koin: KoinComponent)
     fun state(count: Int = 0): EditModel.State {
-        val state by retainMolecule(
-            presenter = { koin.get<EditModel.Presenter>() },
-            present = { it(count) },
-            count
-        ).collectAsStateWithLifecycle()
+        val presenter = retain { koin.get<EditModel.Presenter>() }
+        val stateFlow = retainMolecule(count) { presenter.invoke(count) }
+        val state by stateFlow.collectAsStateWithLifecycle()
         return state
     }
 }
