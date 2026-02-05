@@ -23,8 +23,13 @@ object EditModel {
         operator fun invoke(initialCount: Int): State {
             var count by remember { mutableIntStateOf(initialCount) }
             return State(count, object : Actions {
-                override fun increment() { count++ }
-                override fun decrement() { count-- }
+                override fun increment() {
+                    count++
+                }
+
+                override fun decrement() {
+                    count--
+                }
             })
         }
     }

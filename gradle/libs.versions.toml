@@ -1,6 +1,6 @@
 [versions]
-activityCompose = "1.12.2"
-agp = "8.13.2"
+activityCompose = "1.12.3"
+agp = "9.0.0"
 koin-bom = "4.1.1"
 kotlin = "2.3.0"
 coreKtx = "1.17.0"
@@ -9,11 +9,11 @@ junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 appcompat = "1.7.1"
 material = "1.13.0"
-activity = "1.12.2"
+activity = "1.12.3"
 nav3Core = "1.0.0"
-kotlinSerialization = "2.2.21"
-kotlinxSerializationCore = "1.9.0"
-compose-bom = "2025.12.00"
+kotlinSerialization = "2.3.0"
+kotlinxSerializationCore = "1.10.0"
+compose-bom = "2026.01.01"
 molecule = "2.2.0"
 
 [libraries]
@@ -40,6 +40,5 @@ app-cash-molecule-runtime = { module = "app.cash.molecule:molecule-runtime", ver
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization" }
