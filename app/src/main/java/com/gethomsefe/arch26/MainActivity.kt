@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                                         Modifier
                                             .fillMaxSize()
                                             .padding(paddingValues),
-                                        state = EditKoin.state(route.count),
+                                        route.count,
                                         effects = object : EditView.Effects {
                                             override fun save(count: Int) {
                                                 currentCount = count
