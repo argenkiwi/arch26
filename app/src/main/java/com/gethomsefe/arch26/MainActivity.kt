@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
+import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -18,17 +21,23 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import app.cash.molecule.AndroidUiDispatcher
+import com.gethomsefe.arch26.counter.display.DisplayView
+import com.gethomsefe.arch26.counter.edit.EditView
+import com.gethomsefe.arch26.list.ListView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 
 @Serializable
 sealed interface Route {
+    data object List : Route
     data object Display : Route
     data class Edit(val count: Int) : Route
 }
 
 class MainActivity : AppCompatActivity(), KoinComponent {
+
+    @OptIn(ExperimentalMaterial3AdaptiveApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -36,19 +45,31 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             context(retain { CoroutineScope(AndroidUiDispatcher.Main) }) {
                 Scaffold { paddingValues ->
                     var currentCount by rememberSaveable { mutableIntStateOf(0) }
-                    val backStack = remember { mutableStateListOf<Route>(Route.Display) }
+                    val backStack = remember { mutableStateListOf<Route>(Route.List) }
+                    val strategy = rememberListDetailSceneStrategy<Route>()
                     NavDisplay(
                         backStack,
                         onBack = { backStack.removeLastOrNull() },
+                        sceneStrategy = strategy,
+                        modifier = Modifier.padding(paddingValues),
                         entryProvider = { route ->
                             when (route) {
-                                Route.Display -> NavEntry(route) {
-                                    DisplayView.Pane(
-                                        currentCount,
-                                        Modifier
-                                            .fillMaxSize()
-                                            .padding(paddingValues)
-                                    ) {
+                                Route.List -> NavEntry(
+                                    route,
+                                    metadata = ListDetailSceneStrategy.listPane()
+                                ) {
+                                    ListView.Pane {
+                                        when (it) {
+                                            ListView.Effect.OnShowCounter -> backStack.add(Route.Display)
+                                        }
+                                    }
+                                }
+
+                                Route.Display -> NavEntry(
+                                    route,
+                                    metadata = ListDetailSceneStrategy.detailPane()
+                                ) {
+                                    DisplayView.Pane(Modifier.fillMaxSize(), currentCount) {
                                         when (it) {
                                             DisplayView.Effect.Edit -> Route.Edit(currentCount)
                                                 .also(backStack::add)
@@ -56,12 +77,13 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                                     }
                                 }
 
-                                is Route.Edit -> NavEntry(route) {
+                                is Route.Edit -> NavEntry(
+                                    route,
+                                    metadata = ListDetailSceneStrategy.detailPane()
+                                ) {
                                     EditView.Pane(
-                                        Modifier
-                                            .fillMaxSize()
-                                            .padding(paddingValues),
-                                        route.count,
+                                        Modifier.fillMaxSize(),
+                                        count = route.count,
                                         effects = object : EditView.Effects {
                                             override fun save(count: Int) {
                                                 currentCount = count

@@ -3,6 +3,7 @@ package com.gethomsefe.arch26
 import app.cash.molecule.RecompositionMode
 import app.cash.molecule.moleculeFlow
 import app.cash.turbine.test
+import com.gethomsefe.arch26.counter.edit.EditModel
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test

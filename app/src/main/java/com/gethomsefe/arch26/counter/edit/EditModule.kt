@@ -1,4 +1,4 @@
-package com.gethomsefe.arch26
+package com.gethomsefe.arch26.counter.edit
 
 import org.koin.dsl.module
 

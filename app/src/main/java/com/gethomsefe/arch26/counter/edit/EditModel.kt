@@ -1,4 +1,4 @@
-package com.gethomsefe.arch26
+package com.gethomsefe.arch26.counter.edit
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue

@@ -1,4 +1,4 @@
-package com.gethomsefe.arch26
+package com.gethomsefe.arch26.counter.edit
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gethomsefe.arch26.R
+import com.gethomsefe.arch26.retainMolecule
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get

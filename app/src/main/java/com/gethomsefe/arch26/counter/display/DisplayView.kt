@@ -1,4 +1,4 @@
-package com.gethomsefe.arch26
+package com.gethomsefe.arch26.counter.display
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.gethomsefe.arch26.R
 
 object DisplayView {
     sealed interface Effect {
@@ -18,7 +19,7 @@ object DisplayView {
     }
 
     @Composable
-    fun Pane(count: Int, modifier: Modifier = Modifier, produce: (Effect) -> Unit) {
+    fun Pane(modifier: Modifier = Modifier, count: Int, produce: (Effect) -> Unit) {
         Column(
             modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
