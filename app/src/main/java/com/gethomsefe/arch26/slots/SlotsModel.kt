@@ -31,14 +31,14 @@ object SlotsModel {
 
             var slot2 by rememberLoader {
                 Either.catch {
-                    delay(2000)
+                    delay(1500)
                     Random.nextInt(65, 91).toChar()
                 }
             }
 
             var slot3 by rememberLoader {
                 Either.catch {
-                    delay(3000)
+                    delay(2000)
                     Random.nextInt(65, 91).toChar()
                 }
             }
