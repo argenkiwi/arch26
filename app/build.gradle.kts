@@ -79,4 +79,5 @@ dependencies {
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.androidx.compose.material3.adaptive.navigation3)
+    implementation(libs.arrow.core)
 }

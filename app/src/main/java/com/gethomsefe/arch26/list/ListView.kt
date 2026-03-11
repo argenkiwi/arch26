@@ -10,7 +10,8 @@ import androidx.compose.ui.Modifier
 
 object ListView {
     sealed interface Effect {
-        data object OnShowCounter: Effect
+        data object OnShowCounter : Effect
+        data object OnShowSlots : Effect
     }
 
     @Composable
@@ -19,7 +20,13 @@ object ListView {
             item {
                 ListItem(
                     headlineContent = { Text("Counter Example") },
-                    modifier = modifier.clickable { produce(Effect.OnShowCounter) }
+                    modifier = Modifier.clickable { produce(Effect.OnShowCounter) }
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text("Slots Example") },
+                    modifier = Modifier.clickable { produce(Effect.OnShowSlots) }
                 )
             }
         }

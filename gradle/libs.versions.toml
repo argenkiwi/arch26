@@ -2,6 +2,7 @@
 activityCompose = "1.12.4"
 adaptive-nav3 = "1.3.0-alpha09"
 agp = "9.1.0"
+arrowCore = "2.2.2"
 koin-bom = "4.1.1"
 kotlin = "2.3.10"
 coreKtx = "1.17.0"
@@ -31,6 +32,7 @@ androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrowCore" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

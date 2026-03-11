@@ -24,6 +24,7 @@ import app.cash.molecule.AndroidUiDispatcher
 import com.gethomsefe.arch26.counter.display.DisplayView
 import com.gethomsefe.arch26.counter.edit.EditView
 import com.gethomsefe.arch26.list.ListView
+import com.gethomsefe.arch26.slots.SlotsView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
@@ -33,6 +34,7 @@ sealed interface Route {
     data object List : Route
     data object Display : Route
     data class Edit(val count: Int) : Route
+    data object Slots : Route
 }
 
 class MainActivity : AppCompatActivity(), KoinComponent {
@@ -61,6 +63,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                                     ListView.Pane {
                                         when (it) {
                                             ListView.Effect.OnShowCounter -> backStack.add(Route.Display)
+                                            ListView.Effect.OnShowSlots -> backStack.add(Route.Slots)
                                         }
                                     }
                                 }
@@ -95,6 +98,13 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                                             }
                                         }
                                     )
+                                }
+
+                                Route.Slots -> NavEntry(
+                                    route,
+                                    metadata = ListDetailSceneStrategy.detailPane()
+                                ) {
+                                    SlotsView.Pane(Modifier.fillMaxSize())
                                 }
                             }
                         }
