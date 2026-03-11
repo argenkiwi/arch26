@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gethomsefe.arch26.Loader
+import com.gethomsefe.arch26.Worker
 import com.gethomsefe.arch26.retainMolecule
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.component.KoinComponent
@@ -39,9 +39,9 @@ object SlotsView {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun Pane(modifier: Modifier, state: SlotsModel.State) {
-        val isRefreshing = state.slot1 is Loader.Busy
-                || state.slot2 is Loader.Busy
-                || state.slot3 is Loader.Busy
+        val isRefreshing = state.slot1 is Worker.Busy
+                || state.slot2 is Worker.Busy
+                || state.slot3 is Worker.Busy
 
         PullToRefreshBox(
             modifier = modifier,
@@ -70,16 +70,16 @@ object SlotsView {
     }
 
     @Composable
-    private fun SlotItem(loader: Loader<Char>) {
+    private fun SlotItem(loader: Worker<Unit, Char>) {
         Box(modifier = Modifier.size(64.dp), contentAlignment = Alignment.Center) {
             when (loader) {
-                is Loader.Busy -> CircularProgressIndicator()
-                is Loader.Success -> Text(
+                is Worker.Busy -> CircularProgressIndicator()
+                is Worker.Done -> Text(
                     text = loader.result.toString(),
                     style = MaterialTheme.typography.displayLarge
                 )
 
-                else -> Text(
+                Worker.Idle -> Text(
                     text = "-",
                     style = MaterialTheme.typography.displayLarge
                 )
