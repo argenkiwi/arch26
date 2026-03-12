@@ -24,6 +24,7 @@ import app.cash.molecule.AndroidUiDispatcher
 import com.gethomsefe.arch26.counter.display.DisplayView
 import com.gethomsefe.arch26.counter.edit.EditView
 import com.gethomsefe.arch26.list.ListView
+import com.gethomsefe.arch26.quakes.QuakesView
 import com.gethomsefe.arch26.slots.SlotsView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
@@ -35,6 +36,7 @@ sealed interface Route {
     data object Display : Route
     data class Edit(val count: Int) : Route
     data object Slots : Route
+    data object Quakes : Route
 }
 
 class MainActivity : AppCompatActivity(), KoinComponent {
@@ -64,6 +66,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                                         when (it) {
                                             ListView.Effect.OnShowCounter -> backStack.add(Route.Display)
                                             ListView.Effect.OnShowSlots -> backStack.add(Route.Slots)
+                                            ListView.Effect.OnShowQuakes -> backStack.add(Route.Quakes)
                                         }
                                     }
                                 }
@@ -105,6 +108,13 @@ class MainActivity : AppCompatActivity(), KoinComponent {
                                     metadata = ListDetailSceneStrategy.detailPane()
                                 ) {
                                     SlotsView.Pane(Modifier.fillMaxSize())
+                                }
+
+                                Route.Quakes -> NavEntry(
+                                    route,
+                                    metadata = ListDetailSceneStrategy.detailPane()
+                                ) {
+                                    QuakesView.Pane(Modifier.fillMaxSize())
                                 }
                             }
                         }

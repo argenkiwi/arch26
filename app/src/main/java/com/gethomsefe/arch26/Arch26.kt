@@ -2,6 +2,7 @@ package com.gethomsefe.arch26
 
 import android.app.Application
 import com.gethomsefe.arch26.counter.edit.editModule
+import com.gethomsefe.arch26.quakes.quakesModule
 import com.gethomsefe.arch26.slots.slotsModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -11,7 +12,7 @@ class Arch26 : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@Arch26)
-            modules(editModule, slotsModule)
+            modules(editModule, slotsModule, quakesModule)
         }
     }
 }
