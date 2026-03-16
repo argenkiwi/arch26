@@ -83,7 +83,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.androidx.compose.material3.adaptive.navigation3)
     implementation(libs.arrow.core)
-    implementation(libs.store5)
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)

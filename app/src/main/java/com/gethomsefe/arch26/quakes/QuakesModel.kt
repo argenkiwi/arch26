@@ -5,11 +5,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import arrow.core.Either
 import com.gethomsefe.arch26.Busy
 import com.gethomsefe.arch26.Worker
 import com.gethomsefe.arch26.rememberWorker
-import org.mobilenativefoundation.store.store5.Store
-import org.mobilenativefoundation.store.store5.impl.extensions.fresh
+import com.gethomsefe.arch26.network.ErrorResponse
 
 object QuakesModel {
     sealed interface Action {
@@ -18,30 +18,39 @@ object QuakesModel {
     }
 
     data class State(
-        val quakes: Worker<Int, List<Quake>>,
+        val quakesWorker: Worker<Int, Either<String?, List<Quake>>>,
         val mmi: Int,
         val perform: (Action) -> Unit
     )
 
-    class Presenter(private val store: Store<Int, List<QuakeFeature>>) {
+    class Presenter(private val geoNetApi: GeoNetApi) {
+
         @Composable
         operator fun invoke(): State {
             var mmi by remember { mutableIntStateOf(3) }
-            var quakes by rememberWorker(initial = Busy(mmi)) { mmiValue ->
-                store.fresh(mmiValue).map { it.toDomain() }
+            var quakesWorker by rememberWorker(initial = Busy(mmi)) { mmiValue ->
+                geoNetApi.getQuakes(mmiValue).mapLeft { response ->
+                    when (response) {
+                        is ErrorResponse.Network -> response.throwable.message
+                        is ErrorResponse.Server -> response.body
+                        is ErrorResponse.Unexpected -> response.throwable.message
+                    }
+                }.map { response ->
+                    response.body.features.map { it.toDomain() }
+                }
             }
 
             return State(
-                quakes = quakes,
+                quakesWorker = quakesWorker,
                 mmi = mmi,
                 perform = { action ->
                     when (action) {
                         is Action.SetMmi -> {
                             mmi = action.mmi
-                            quakes = Busy(action.mmi)
+                            quakesWorker = Busy(action.mmi)
                         }
 
-                        Action.Refresh -> quakes = Busy(mmi)
+                        Action.Refresh -> quakesWorker = Busy(mmi)
                     }
                 }
             )

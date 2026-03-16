@@ -16,7 +16,7 @@ val quakesModule
                 }
             }
         }
-        single { GeoNetApi(get()) }
-        single { createQuakesStore(get()) }
+
+        single<GeoNetApi> { KtorGeoNetApi(get()) }
         factory { QuakesModel.Presenter(get()) }
     }

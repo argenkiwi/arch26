@@ -45,7 +45,7 @@ object QuakesView {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun Pane(modifier: Modifier, state: QuakesModel.State) {
-        val isRefreshing = state.quakes is Busy
+        val isRefreshing = state.quakesWorker is Busy
 
         Column(modifier = modifier) {
             MmiFilter(
@@ -57,11 +57,15 @@ object QuakesView {
                 isRefreshing = isRefreshing,
                 onRefresh = { state.perform(QuakesModel.Action.Refresh) }
             ) {
-                when (val quakes = state.quakes) {
+                when (val quakes = state.quakesWorker) {
                     is Busy -> CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center)
                     )
-                    is Done -> QuakeList(quakes.result)
+
+                    is Done -> quakes.result.onRight {
+                        QuakeList(it)
+                    }
+
                     else -> Unit
                 }
             }
