@@ -6,7 +6,9 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.http.HttpHeaders
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class KtorGeoNetApi(private val client: HttpClient) : GeoNetApi {
     override suspend fun getQuakes(mmi: Int) = ktorRequest<QuakeFeatureCollection, String> {
         client.get("https://api.geonet.org.nz/quake") {
@@ -14,6 +16,4 @@ class KtorGeoNetApi(private val client: HttpClient) : GeoNetApi {
             header(HttpHeaders.Accept, "application/vnd.geo+json;version=2")
         }
     }
-
 }
-

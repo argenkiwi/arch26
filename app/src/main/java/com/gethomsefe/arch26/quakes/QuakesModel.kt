@@ -10,6 +10,7 @@ import com.gethomsefe.arch26.Busy
 import com.gethomsefe.arch26.Worker
 import com.gethomsefe.arch26.rememberWorker
 import com.gethomsefe.arch26.network.ErrorResponse
+import org.koin.core.annotation.Factory
 
 object QuakesModel {
     sealed interface Action {
@@ -23,6 +24,7 @@ object QuakesModel {
         val perform: (Action) -> Unit
     )
 
+    @Factory
     class Presenter(private val geoNetApi: GeoNetApi) {
 
         @Composable
