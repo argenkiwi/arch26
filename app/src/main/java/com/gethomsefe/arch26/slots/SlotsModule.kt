@@ -1,6 +1,10 @@
 package com.gethomsefe.arch26.slots
 
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
 
-val slotsModule
-    get() = module { factory { SlotsModel.Presenter() } }
+@Module
+@ComponentScan
+@Configuration
+class SlotsModule

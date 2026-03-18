@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.retain.retain
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -25,15 +24,14 @@ import com.gethomsefe.arch26.Idle
 import com.gethomsefe.arch26.Loader
 import com.gethomsefe.arch26.retainMolecule
 import kotlinx.coroutines.CoroutineScope
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import org.koin.compose.koinInject
 
 object SlotsView {
 
     @Composable
-    context(scope: CoroutineScope, koin: KoinComponent)
+    context(scope: CoroutineScope)
     fun Pane(modifier: Modifier = Modifier) {
-        val presenter = retain { koin.get<SlotsModel.Presenter>() }
+        val presenter = koinInject<SlotsModel.Presenter>()
         val stateFlow = retainMolecule { presenter.invoke() }
         val state by stateFlow.collectAsStateWithLifecycle()
         Pane(modifier, state)

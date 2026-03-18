@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import org.koin.core.annotation.Factory
 
 object EditModel {
     interface Actions {
@@ -17,6 +18,7 @@ object EditModel {
         val actions: Actions
     )
 
+    @Factory
     class Presenter {
 
         @Composable

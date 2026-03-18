@@ -9,7 +9,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.retain.retain
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -18,8 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gethomsefe.arch26.R
 import com.gethomsefe.arch26.retainMolecule
 import kotlinx.coroutines.CoroutineScope
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import org.koin.compose.koinInject
 
 object EditView {
     interface Effects {
@@ -28,9 +26,9 @@ object EditView {
     }
 
     @Composable
-    context(scope: CoroutineScope, koin: KoinComponent)
+    context(scope: CoroutineScope)
     fun Pane(modifier: Modifier = Modifier, count: Int = 0, effects: Effects) {
-        val presenter = retain { koin.get<EditModel.Presenter>() }
+        val presenter = koinInject<EditModel.Presenter>()
         val stateFlow = retainMolecule(count) { presenter.invoke(count) }
         val state by stateFlow.collectAsStateWithLifecycle()
         Pane(modifier, state, effects)

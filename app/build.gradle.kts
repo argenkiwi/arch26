@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrains.kotlin.serialization)
 }
@@ -73,6 +74,8 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
+    implementation(libs.koin.annotations)
+    implementation(libs.koin.compose)
     implementation(libs.app.cash.molecule.runtime)
     testImplementation(libs.turbine)
     implementation(libs.androidx.navigation3.ui)

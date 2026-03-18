@@ -13,7 +13,6 @@ import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneSt
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.retain.retain
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -27,7 +26,6 @@ import com.gethomsefe.arch26.list.ListView
 import com.gethomsefe.arch26.slots.SlotsView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
-import org.koin.core.component.KoinComponent
 
 @Serializable
 sealed interface Route {
@@ -37,7 +35,7 @@ sealed interface Route {
     data object Slots : Route
 }
 
-class MainActivity : AppCompatActivity(), KoinComponent {
+class MainActivity : AppCompatActivity() {
 
     @OptIn(ExperimentalMaterial3AdaptiveApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,13 +44,12 @@ class MainActivity : AppCompatActivity(), KoinComponent {
         setContent {
             context(retain { CoroutineScope(AndroidUiDispatcher.Main) }) {
                 Scaffold { paddingValues ->
+                    val backStack = retain { mutableStateListOf<Route>(Route.List) }
                     var currentCount by rememberSaveable { mutableIntStateOf(0) }
-                    val backStack = remember { mutableStateListOf<Route>(Route.List) }
-                    val strategy = rememberListDetailSceneStrategy<Route>()
                     NavDisplay(
                         backStack,
                         onBack = { backStack.removeLastOrNull() },
-                        sceneStrategy = strategy,
+                        sceneStrategy = rememberListDetailSceneStrategy(),
                         modifier = Modifier.padding(paddingValues),
                         entryProvider = { route ->
                             when (route) {

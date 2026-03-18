@@ -5,6 +5,7 @@ import com.gethomsefe.arch26.Busy
 import com.gethomsefe.arch26.Loader
 import com.gethomsefe.arch26.rememberLoader
 import kotlinx.coroutines.delay
+import org.koin.core.annotation.Factory
 import kotlin.random.Random
 
 object SlotsModel {
@@ -19,7 +20,9 @@ object SlotsModel {
         val perform: (Action) -> Unit
     )
 
+    @Factory
     class Presenter {
+
         @Composable
         operator fun invoke(): State {
             var slot1 by rememberLoader {
