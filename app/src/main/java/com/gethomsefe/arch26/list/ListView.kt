@@ -12,6 +12,7 @@ object ListView {
     sealed interface Effect {
         data object OnShowCounter : Effect
         data object OnShowSlots : Effect
+        data object OnShowQuakes : Effect
     }
 
     @Composable
@@ -27,6 +28,12 @@ object ListView {
                 ListItem(
                     headlineContent = { Text("Slots Example") },
                     modifier = Modifier.clickable { produce(Effect.OnShowSlots) }
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text("Quakes") },
+                    modifier = Modifier.clickable { produce(Effect.OnShowQuakes) }
                 )
             }
         }
