@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.koin.compiler)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.sqldelight)
 }
 
 android {
@@ -53,6 +54,14 @@ kotlin {
     }
 }
 
+sqldelight {
+    databases {
+        register("Database") {
+            packageName.set("com.gethomesafe.arch26")
+        }
+    }
+}
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -87,4 +96,6 @@ dependencies {
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.android.driver)
+    implementation(libs.coroutines.extensions)
 }

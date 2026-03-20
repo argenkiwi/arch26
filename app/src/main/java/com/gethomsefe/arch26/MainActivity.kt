@@ -25,6 +25,7 @@ import com.gethomsefe.arch26.counter.edit.EditView
 import com.gethomsefe.arch26.list.ListView
 import com.gethomsefe.arch26.quakes.QuakesView
 import com.gethomsefe.arch26.slots.SlotsView
+import com.gethomsefe.arch26.todo.TodosView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
 
@@ -35,6 +36,7 @@ sealed interface Route {
     data class Edit(val count: Int) : Route
     data object Slots : Route
     data object Quakes : Route
+    data object Todos : Route
 }
 
 class MainActivity : AppCompatActivity() {
@@ -64,6 +66,7 @@ class MainActivity : AppCompatActivity() {
                                             ListView.Effect.OnShowCounter -> backStack.add(Route.Display)
                                             ListView.Effect.OnShowSlots -> backStack.add(Route.Slots)
                                             ListView.Effect.OnShowQuakes -> backStack.add(Route.Quakes)
+                                            ListView.Effect.OnShowTodos -> backStack.add(Route.Todos)
                                         }
                                     }
                                 }
@@ -112,6 +115,13 @@ class MainActivity : AppCompatActivity() {
                                     metadata = ListDetailSceneStrategy.detailPane()
                                 ) {
                                     QuakesView.Pane(Modifier.fillMaxSize())
+                                }
+
+                                Route.Todos -> NavEntry(
+                                    route,
+                                    metadata = ListDetailSceneStrategy.detailPane()
+                                ) {
+                                    TodosView.Pane(Modifier.fillMaxSize())
                                 }
                             }
                         }

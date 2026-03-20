@@ -13,6 +13,7 @@ object ListView {
         data object OnShowCounter : Effect
         data object OnShowSlots : Effect
         data object OnShowQuakes : Effect
+        data object OnShowTodos : Effect
     }
 
     @Composable
@@ -34,6 +35,12 @@ object ListView {
                 ListItem(
                     headlineContent = { Text("Quakes") },
                     modifier = Modifier.clickable { produce(Effect.OnShowQuakes) }
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text("Todo List") },
+                    modifier = Modifier.clickable { produce(Effect.OnShowTodos) }
                 )
             }
         }

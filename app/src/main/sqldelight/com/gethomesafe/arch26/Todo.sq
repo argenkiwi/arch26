@@ -1,0 +1,19 @@
+import kotlin.Boolean;
+
+CREATE TABLE todo (
+  id TEXT NOT NULL PRIMARY KEY,
+  title TEXT NOT NULL,
+  completed INTEGER AS Boolean NOT NULL DEFAULT 0
+);
+
+getAll:
+SELECT * FROM todo;
+
+add:
+INSERT INTO todo (id, title, completed) VALUES (?, ?, 0);
+
+toggle:
+UPDATE todo SET completed = 1 - completed WHERE id = ?;
+
+delete:
+DELETE FROM todo WHERE id = ?;
