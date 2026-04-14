@@ -7,9 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
-import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -41,7 +38,6 @@ sealed interface Route {
 
 class MainActivity : AppCompatActivity() {
 
-    @OptIn(ExperimentalMaterial3AdaptiveApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -51,16 +47,12 @@ class MainActivity : AppCompatActivity() {
                     val backStack = retain { mutableStateListOf<Route>(Route.List) }
                     var currentCount by rememberSaveable { mutableIntStateOf(0) }
                     NavDisplay(
-                        backStack,
+                        backStack = backStack,
                         onBack = { backStack.removeLastOrNull() },
-                        sceneStrategy = rememberListDetailSceneStrategy(),
                         modifier = Modifier.padding(paddingValues),
                         entryProvider = { route ->
                             when (route) {
-                                Route.List -> NavEntry(
-                                    route,
-                                    metadata = ListDetailSceneStrategy.listPane()
-                                ) {
+                                Route.List -> NavEntry(route) {
                                     ListView.Pane {
                                         when (it) {
                                             ListView.Effect.OnShowCounter -> backStack.add(Route.Display)
@@ -71,10 +63,7 @@ class MainActivity : AppCompatActivity() {
                                     }
                                 }
 
-                                Route.Display -> NavEntry(
-                                    route,
-                                    metadata = ListDetailSceneStrategy.detailPane()
-                                ) {
+                                Route.Display -> NavEntry(route) {
                                     DisplayView.Pane(Modifier.fillMaxSize(), currentCount) {
                                         when (it) {
                                             DisplayView.Effect.Edit -> Route.Edit(currentCount)
@@ -83,10 +72,7 @@ class MainActivity : AppCompatActivity() {
                                     }
                                 }
 
-                                is Route.Edit -> NavEntry(
-                                    route,
-                                    metadata = ListDetailSceneStrategy.detailPane()
-                                ) {
+                                is Route.Edit -> NavEntry(route) {
                                     EditView.Pane(
                                         Modifier.fillMaxSize(),
                                         count = route.count,
@@ -103,24 +89,15 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 }
 
-                                Route.Slots -> NavEntry(
-                                    route,
-                                    metadata = ListDetailSceneStrategy.detailPane()
-                                ) {
+                                Route.Slots -> NavEntry(route) {
                                     SlotsView.Pane(Modifier.fillMaxSize())
                                 }
 
-                                Route.Quakes -> NavEntry(
-                                    route,
-                                    metadata = ListDetailSceneStrategy.detailPane()
-                                ) {
+                                Route.Quakes -> NavEntry(route) {
                                     QuakesView.Pane(Modifier.fillMaxSize())
                                 }
 
-                                Route.Todos -> NavEntry(
-                                    route,
-                                    metadata = ListDetailSceneStrategy.detailPane()
-                                ) {
+                                Route.Todos -> NavEntry(route) {
                                     TodosView.Pane(Modifier.fillMaxSize())
                                 }
                             }
