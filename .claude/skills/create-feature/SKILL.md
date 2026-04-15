@@ -1,6 +1,6 @@
 ---
 name: create-feature
-description: Scaffolds a complete feature package — Model, Module, View, and Presenter unit tests — following the project's Molecule + Koin architecture. Orchestrates the create-model, create-view, and create-model-test skills and ensures the Koin DI module is created. Use this when the user wants to add a new screen end-to-end.
+description: Scaffolds a complete feature package — Model, View, and Presenter unit tests — following the project's Molecule + Koin architecture. Orchestrates the create-model, create-view, and create-model-test skills. Creates a module file only when third-party dependencies are needed. Use this when the user wants to add a new screen end-to-end.
 metadata:
   author: leandro
   version: "1.0"
@@ -13,7 +13,7 @@ This skill scaffolds all the files needed for a new feature screen in one pass:
 | File | Skill reference |
 |---|---|
 | `<FeatureName>Model.kt` | [create-model](../create-model/SKILL.md) |
-| `<FeatureName>Module.kt` | this skill (see below) |
+| `<FeatureName>Module.kt` *(optional)* | this skill — only when third-party deps are needed |
 | `<FeatureName>View.kt` | [create-view](../create-view/SKILL.md) |
 | `<FeatureName>ModelPresenterTest.kt` | [create-model-test](../create-model-test/SKILL.md) |
 
@@ -45,58 +45,38 @@ Key points:
 
 ---
 
-## Step 3 — Create the Module
+## Step 3 — Create a Module File (only if needed)
 
-Create `<FeatureName>Module.kt` in the **same package** as the model.
+The root `Arch26Module` carries `@ComponentScan`, which auto-discovers every `@Factory`, `@Single`, and `@Singleton` annotation in the entire `com.gethomsefe.arch26` package tree. **No per-feature `@Module` class is needed.**
 
-### Simple module (presenter only — most common)
+### Presenter only (most common)
 
-When the only Koin-managed class in the package is the `@Factory`-annotated `Presenter`, the module body is empty — `@ComponentScan` does all the work:
+Nothing to do — the `@Factory Presenter` in the Model is discovered automatically.
 
-```kotlin
-package com.gethomsefe.arch26.<feature>
+### Third-party dependencies (network / database / external SDK)
 
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
-
-@Module
-@ComponentScan
-class <FeatureName>Module
-```
-
-### Module with manual bindings (network / database)
-
-When the feature needs additional singletons that can't be annotated directly (e.g., an `HttpClient`, a `Database`, an external API interface), add `@Configuration` and declare them as functions:
+When the feature needs objects that can't carry Koin annotations directly (e.g., an `HttpClient`, a `Database`), create `<FeatureName>Module.kt` with plain top-level annotated functions. **No `@Module` class required.**
 
 ```kotlin
 package com.gethomsefe.arch26.<feature>
 
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Configuration
-import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
 
-@Module
-@ComponentScan
-@Configuration
-class <FeatureName>Module {
+@Singleton
+fun someClient(): SomeClient = SomeClient(...)
 
-    @Singleton
-    fun someClient(): SomeClient = SomeClient(...)
-}
+@Singleton
+fun someOtherDep(client: SomeClient): SomeDep = SomeDep(client)
 ```
 
-**No changes to `Arch26.kt` are needed.** The `@KoinApplication` annotation on `Arch26` uses the Koin compiler plugin to auto-discover every `@Module`-annotated class on the classpath.
+**No changes to `Arch26.kt` are needed** — the root `@ComponentScan` picks up annotated functions in any subpackage.
 
-### Module annotation quick-reference
+### Annotation quick-reference
 
 | Annotation | When to use |
 |---|---|
-| `@Module` | Always — marks the class as a Koin module |
-| `@ComponentScan` | Always — auto-registers `@Factory`/`@Single`/`@Singleton` in the same package |
-| `@Configuration` | Only when the module class body declares manual bindings |
-| `@Factory` (on a function) | Short-lived dependency, new instance per injection |
-| `@Single` / `@Singleton` (on a function) | Shared, long-lived dependency |
+| `@Factory` | Short-lived dependency, new instance per injection |
+| `@Single` / `@Singleton` | Shared, long-lived dependency |
 
 ---
 
@@ -210,7 +190,7 @@ Run the tests after writing:
 Work through each item in order. Do not move to the next until the current file compiles.
 
 - [ ] `<FeatureName>Model.kt` — object with `State`, `Action`/`Actions`, `@Factory Presenter`
-- [ ] `<FeatureName>Module.kt` — `@Module @ComponentScan` (add `@Configuration` if needed)
+- [ ] `<FeatureName>Module.kt` — only if third-party deps needed; top-level annotated functions, no `@Module` class
 - [ ] `<FeatureName>View.kt` — two `Pane` overloads, optional `Effect`
 - [ ] `MainActivity.kt` — new `Route` entry + `NavEntry` in `entryProvider`
 - [ ] `ListView.kt` — new `Effect` + list item (if menu entry requested)
@@ -228,11 +208,12 @@ Work through each item in order. Do not move to the next until the current file 
 ```
 app/src/main/java/com/gethomsefe/arch26/weather/
     WeatherModel.kt
-    WeatherModule.kt
     WeatherView.kt
 app/src/test/java/com/gethomsefe/arch26/weather/
     WeatherModelPresenterTest.kt
 ```
+
+No module file needed — `WeatherModel.Presenter` is `@Factory` and is discovered by the root `@ComponentScan`.
 
 **`WeatherModel.kt`** (loads current conditions, lets user refresh):
 ```kotlin
@@ -268,18 +249,6 @@ object WeatherModel {
         private suspend fun fetchConditions(): String = "Sunny, 22°C"
     }
 }
-```
-
-**`WeatherModule.kt`**:
-```kotlin
-package com.gethomsefe.arch26.weather
-
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
-
-@Module
-@ComponentScan
-class WeatherModule
 ```
 
 **`WeatherView.kt`** (sketch — stateless Pane omitted for brevity):
