@@ -26,3 +26,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "arch26"
 include(":app")
+include(":foo")
