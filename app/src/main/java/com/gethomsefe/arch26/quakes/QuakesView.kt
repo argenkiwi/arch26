@@ -1,6 +1,7 @@
 package com.gethomsefe.arch26.quakes
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.ListItem
@@ -43,29 +43,24 @@ object QuakesView {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun Pane(modifier: Modifier, state: QuakesModel.State) {
-        val isRefreshing = state.quakesWorker is Busy
+        val isRefreshing = state.worker is Busy
+        val error = (state.worker as? Done)?.result?.fold({ it }, { null })
 
         Column(modifier = modifier) {
             MmiFilter(
                 selected = state.mmi,
                 onSelect = { state.perform(QuakesModel.Action.SetMmi(it)) }
             )
+
             PullToRefreshBox(
                 modifier = Modifier.fillMaxSize(),
                 isRefreshing = isRefreshing,
                 onRefresh = { state.perform(QuakesModel.Action.Refresh) }
             ) {
-                when (val quakes = state.quakesWorker) {
-                    is Busy -> CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-
-                    is Done -> quakes.result.onRight {
-                        QuakeList(it)
-                    }
-
-                    else -> Unit
-                }
+                QuakeList(
+                    quakes = state.quakes,
+                    error = error
+                )
             }
         }
     }
@@ -89,27 +84,41 @@ object QuakesView {
     }
 
     @Composable
-    private fun QuakeList(quakes: List<Quake>) {
+    private fun QuakeList(quakes: List<Quake>, error: String? = null) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(quakes, key = { it.id }) { quake ->
-                ListItem(
-                    headlineContent = { Text(quake.locality) },
-                    supportingContent = {
-                        Text("M${quake.magnitude}  •  ${quake.depth} km deep  •  MMI ${quake.mmi}")
-                    },
-                    trailingContent = {
-                        Text(
-                            text = "M${quake.magnitude}",
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    }
-                )
-            }
             if (quakes.isEmpty()) {
                 item {
-                    Text(
-                        text = "No quakes found",
-                        modifier = Modifier.padding(16.dp)
+                    Box(
+                        modifier = Modifier.fillParentMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (error != null) {
+                            Text(
+                                text = error,
+                                modifier = Modifier.padding(16.dp),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        } else {
+                            Text(
+                                text = "No quakes found",
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
+                    }
+                }
+            } else {
+                items(quakes, key = { it.id }) { quake ->
+                    ListItem(
+                        headlineContent = { Text(quake.locality) },
+                        supportingContent = {
+                            Text("M${quake.magnitude}  •  ${quake.depth} km deep  •  MMI ${quake.mmi}")
+                        },
+                        trailingContent = {
+                            Text(
+                                text = "M${quake.magnitude}",
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
                     )
                 }
             }
