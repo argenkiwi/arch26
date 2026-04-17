@@ -1,4 +1,4 @@
-package com.gethomsefe.arch26.todo
+package com.gethomsefe.arch26.todo.data
 
 import android.content.Context
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver

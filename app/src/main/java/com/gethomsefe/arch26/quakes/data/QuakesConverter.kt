@@ -1,4 +1,4 @@
-package com.gethomsefe.arch26.quakes
+package com.gethomsefe.arch26.quakes.data
 
 fun QuakeFeature.toDomain(): Quake = Quake(
     id = properties.publicID,

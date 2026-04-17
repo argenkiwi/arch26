@@ -1,4 +1,4 @@
-package com.gethomsefe.arch26.quakes
+package com.gethomsefe.arch26.quakes.data
 
 import com.gethomsefe.arch26.network.ktorRequest
 import io.ktor.client.HttpClient

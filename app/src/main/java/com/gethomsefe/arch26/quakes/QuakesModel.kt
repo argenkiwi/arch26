@@ -10,6 +10,8 @@ import androidx.compose.runtime.setValue
 import arrow.core.Either
 import com.gethomsefe.arch26.Busy
 import com.gethomsefe.arch26.Worker
+import com.gethomsefe.arch26.quakes.data.Quake
+import com.gethomsefe.arch26.quakes.data.QuakesRepository
 import com.gethomsefe.arch26.rememberWorker
 import org.koin.core.annotation.Factory
 

@@ -1,9 +1,9 @@
-package com.gethomsefe.arch26.todo
+package com.gethomsefe.arch26.todo.data
 
 import kotlinx.coroutines.flow.StateFlow
 
 interface TodoRepository {
-    val todos: StateFlow<List<Todo>>
+    val stateFlow: StateFlow<List<Todo>>
     suspend fun add(title: String)
     suspend fun toggle(id: String)
     suspend fun delete(id: String)

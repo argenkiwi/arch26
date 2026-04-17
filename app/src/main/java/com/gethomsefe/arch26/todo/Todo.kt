@@ -1,3 +1,0 @@
-package com.gethomsefe.arch26.todo
-
-data class Todo(val id: String, val title: String, val completed: Boolean)

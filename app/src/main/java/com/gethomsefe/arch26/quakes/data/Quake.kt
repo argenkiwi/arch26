@@ -1,4 +1,4 @@
-package com.gethomsefe.arch26.quakes
+package com.gethomsefe.arch26.quakes.data
 
 data class Quake(
     val id: String,

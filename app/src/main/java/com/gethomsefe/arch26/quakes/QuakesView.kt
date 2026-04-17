@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gethomsefe.arch26.Busy
 import com.gethomsefe.arch26.Done
+import com.gethomsefe.arch26.quakes.data.Quake
 import com.gethomsefe.arch26.retainMolecule
 import kotlinx.coroutines.CoroutineScope
 import org.koin.compose.koinInject

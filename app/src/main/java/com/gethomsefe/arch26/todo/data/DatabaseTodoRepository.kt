@@ -1,4 +1,4 @@
-package com.gethomsefe.arch26.todo
+package com.gethomsefe.arch26.todo.data
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
@@ -18,7 +18,7 @@ import java.util.UUID
 class DatabaseTodoRepository(database: Database) : TodoRepository {
     private val queries = database.todoQueries
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    override val todos: StateFlow<List<Todo>> = queries.getAll()
+    override val stateFlow: StateFlow<List<Todo>> = queries.getAll()
         .asFlow()
         .mapToList(Dispatchers.IO)
         .map { rows -> rows.map { Todo(id = it.id, title = it.title, completed = it.completed) } }

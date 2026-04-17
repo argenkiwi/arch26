@@ -3,6 +3,8 @@ package com.gethomsefe.arch26.todo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import com.gethomsefe.arch26.todo.data.Todo
+import com.gethomsefe.arch26.todo.data.TodoRepository
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Factory
 
@@ -23,7 +25,7 @@ object TodosModel {
 
         @Composable
         operator fun invoke(): State {
-            val todos = repository.todos.collectAsState()
+            val todos = repository.stateFlow.collectAsState()
             val scope = rememberCoroutineScope()
             return State(
                 todos = todos.value,

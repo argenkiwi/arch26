@@ -1,4 +1,4 @@
-package com.gethomsefe.arch26.quakes
+package com.gethomsefe.arch26.quakes.data
 
 import arrow.core.right
 import com.gethomsefe.arch26.network.ErrorResponse
@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class QuakesRepositoryImpl(private val geoNetApi: GeoNetApi) : QuakesRepository {
+class InMemoryQuakesRepository(private val geoNetApi: GeoNetApi) : QuakesRepository {
     private val cache = mutableMapOf<Int, MutableStateFlow<List<Quake>>>()
     private val emptyFlow by lazy { MutableStateFlow(emptyList<Quake>()) }
     override fun stateFlow(mmi: Int): StateFlow<List<Quake>> = cache[mmi] ?: emptyFlow
