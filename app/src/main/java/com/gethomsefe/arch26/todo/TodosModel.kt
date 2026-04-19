@@ -20,25 +20,27 @@ object TodosModel {
         val perform: (Action) -> Unit
     )
 
-    @Factory
-    class Presenter(private val repository: TodoRepository) {
+    fun interface Presenter {
 
         @Composable
-        operator fun invoke(): State {
-            val todos = repository.stateFlow.collectAsState()
-            val scope = rememberCoroutineScope()
-            return State(
-                todos = todos.value,
-                perform = { action ->
-                    scope.launch {
-                        when (action) {
-                            is Action.Add -> repository.add(action.title)
-                            is Action.Toggle -> repository.toggle(action.id)
-                            is Action.Delete -> repository.delete(action.id)
-                        }
-                    }
-                }
-            )
-        }
+        operator fun invoke(): State
     }
+}
+
+@Factory
+fun presenter(repository: TodoRepository) = TodosModel.Presenter {
+    val todos = repository.stateFlow.collectAsState()
+    val scope = rememberCoroutineScope()
+    TodosModel.State(
+        todos = todos.value,
+        perform = { action ->
+            scope.launch {
+                when (action) {
+                    is TodosModel.Action.Add -> repository.add(action.title)
+                    is TodosModel.Action.Toggle -> repository.toggle(action.id)
+                    is TodosModel.Action.Delete -> repository.delete(action.id)
+                }
+            }
+        }
+    )
 }

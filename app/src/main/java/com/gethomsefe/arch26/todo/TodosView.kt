@@ -32,7 +32,7 @@ object TodosView {
     context(scope: CoroutineScope)
     fun Pane(modifier: Modifier = Modifier) {
         val presenter = koinInject<TodosModel.Presenter>()
-        val stateFlow = retainMolecule { presenter.invoke() }
+        val stateFlow = retainMolecule { presenter() }
         val state by stateFlow.collectAsStateWithLifecycle()
         Pane(modifier, state)
     }
