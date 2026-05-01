@@ -14,6 +14,7 @@ This skill scaffolds all the files needed for a new feature screen in one pass:
 |---|---|
 | `<FeatureName>Model.kt` | [create-model](../create-model/SKILL.md) |
 | `<FeatureName>Module.kt` *(optional)* | this skill — only when third-party deps are needed |
+| `<feature>/data/<Entity>.kt` + `<Feature>Repository.kt` + impl + `.sq` *(optional)* | [create-repository](../create-repository/SKILL.md) |
 | `<FeatureName>View.kt` | [create-view](../create-view/SKILL.md) |
 | `<FeatureName>ModelPresenterTest.kt` | [create-model-test](../create-model-test/SKILL.md) |
 
@@ -28,9 +29,23 @@ Before writing any code, clarify:
 1. **Feature name** — e.g., `Weather`, `Profile`, `Settings`
 2. **Package** — typically `com.gethomsefe.arch26.<featurename>` (lowercase, no spaces)
 3. **State & actions** — what data does the screen display? What can the user do?
-4. **Async dependencies** — does the presenter need to load data (network, DB)? If so, what?
+4. **Data layer** — does the presenter need persisted or network data? If so, follow Step 2a before the Model.
 5. **Effects / navigation** — does the screen navigate away or return a value to the caller?
 6. **Menu entry** — should it appear in the home list (`ListView`)?
+
+---
+
+## Step 2a — Create the Repository (if needed)
+
+If the feature requires a data layer (database, network, or any external source), follow the **create-repository** skill in full before writing the Model.
+
+Key points:
+- Create `app/src/main/java/com/gethomsefe/arch26/<feature>/data/` with the domain model, interface, and implementation.
+- For SQLDelight: add a `.sq` file under `app/src/main/sqldelight/com/gethomesafe/arch26/` and run `./gradlew assembleDebug` before proceeding.
+- The `@Singleton` implementation is discovered automatically — no extra module file unless the feature introduces new third-party dependencies.
+- The Fake goes in the test file created in Step 7.
+
+Skip this step entirely for features with only local UI state (counters, toggles, form inputs).
 
 ---
 
@@ -189,6 +204,7 @@ Run the tests after writing:
 
 Work through each item in order. Do not move to the next until the current file compiles.
 
+- [ ] `<feature>/data/` — domain model, repository interface, `@Singleton` implementation, `.sq` schema (if data layer needed — follow create-repository skill)
 - [ ] `<FeatureName>Model.kt` — object with `State`, `Action`/`Actions`, `@Factory Presenter`
 - [ ] `<FeatureName>Module.kt` — only if third-party deps needed; top-level annotated functions, no `@Module` class
 - [ ] `<FeatureName>View.kt` — two `Pane` overloads, optional `Effect`
