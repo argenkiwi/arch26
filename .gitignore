@@ -47,3 +47,4 @@ proguard-rules.pro
 
 # Android NDK
 ndkBuild/
+/.zettelkasten
