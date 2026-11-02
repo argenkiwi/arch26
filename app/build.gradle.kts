@@ -10,9 +10,7 @@ plugins {
 
 android {
     namespace = "com.gethomsefe.arch26"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.gethomsefe.arch26"
