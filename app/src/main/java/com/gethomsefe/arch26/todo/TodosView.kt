@@ -23,15 +23,15 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gethomsefe.arch26.retainMolecule
+import com.gethomsefe.arch26.retainPresenter
 import kotlinx.coroutines.CoroutineScope
-import org.koin.compose.koinInject
 
 object TodosView {
 
     @Composable
     context(scope: CoroutineScope)
     fun Pane(modifier: Modifier = Modifier) {
-        val presenter = koinInject<TodosModel.Presenter>()
+        val presenter = retainPresenter<TodosModel.Presenter>()
         val stateFlow = retainMolecule { presenter() }
         val state by stateFlow.collectAsStateWithLifecycle()
         Pane(modifier, state)

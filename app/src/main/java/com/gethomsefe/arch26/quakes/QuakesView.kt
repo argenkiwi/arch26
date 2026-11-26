@@ -25,8 +25,8 @@ import com.gethomsefe.arch26.Busy
 import com.gethomsefe.arch26.Done
 import com.gethomsefe.arch26.quakes.data.Quake
 import com.gethomsefe.arch26.retainMolecule
+import com.gethomsefe.arch26.retainPresenter
 import kotlinx.coroutines.CoroutineScope
-import org.koin.compose.koinInject
 
 private val mmiLevels = listOf(3, 4, 5, 6, 7)
 
@@ -35,7 +35,7 @@ object QuakesView {
     @Composable
     context(scope: CoroutineScope)
     fun Pane(modifier: Modifier = Modifier) {
-        val presenter = koinInject<QuakesModel.Presenter>()
+        val presenter = retainPresenter<QuakesModel.Presenter>()
         val stateFlow = retainMolecule { presenter.invoke() }
         val state by stateFlow.collectAsStateWithLifecycle()
         Pane(modifier, state)

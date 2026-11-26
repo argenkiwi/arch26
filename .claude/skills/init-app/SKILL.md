@@ -187,16 +187,22 @@ Add `android:name=".App"` to the `<application>` element:
 
 ## Step 4 — Create retainMolecule.kt
 
-Create `<module>/src/main/java/<pkg>/retainMolecule.kt`. This bridges Molecule's `launchMolecule()` with `retain {}` so the presenter `StateFlow` survives configuration changes:
+Create `<module>/src/main/java/<pkg>/retainMolecule.kt`. This bridges Molecule's `launchMolecule()` with `retain {}` so the presenter `StateFlow` survives configuration changes. The molecule runs in a child scope that is cancelled via `RetainObserver` when the retained value is retired (e.g. its nav entry is popped). `retainPresenter` resolves a Koin presenter once inside `retain` (see InsertKoinIO/koin discussion #2334) instead of re-resolving it on every recomposition like `koinInject()` would:
 
 ```kotlin
 package <pkg>
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.retain.RetainObserver
 import androidx.compose.runtime.retain.retain
 import app.cash.molecule.RecompositionMode
 import app.cash.molecule.launchMolecule
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.StateFlow
+import org.koin.compose.currentKoinScope
 import kotlin.coroutines.CoroutineContext
 
 @Composable
@@ -206,10 +212,36 @@ fun <T> retainMolecule(
     mode: RecompositionMode = RecompositionMode.ContextClock,
     context: CoroutineContext = scope.coroutineContext,
     body: @Composable () -> T
-) = retain(*keys) {
-    scope.launchMolecule(mode, context, body = body)
+): StateFlow<T> = retain(*keys) {
+    RetainedMolecule(
+        CoroutineScope(context + SupervisorJob(scope.coroutineContext[Job])),
+        mode,
+        body
+    )
+}.stateFlow
+
+private class RetainedMolecule<T>(
+    private val scope: CoroutineScope,
+    mode: RecompositionMode,
+    body: @Composable () -> T
+) : RetainObserver {
+    val stateFlow: StateFlow<T> = scope.launchMolecule(mode, body = body)
+
+    override fun onRetained() = Unit
+    override fun onEnteredComposition() = Unit
+    override fun onExitedComposition() = Unit
+    override fun onRetired() = scope.cancel()
+    override fun onUnused() = scope.cancel()
+}
+
+@Composable
+inline fun <reified P : Any> retainPresenter(vararg keys: Any?): P {
+    val koinScope = currentKoinScope()
+    return retain(*keys) { koinScope.get<P>() }
 }
 ```
+
+This requires `koin-compose` in the module's dependencies.
 
 ---
 
