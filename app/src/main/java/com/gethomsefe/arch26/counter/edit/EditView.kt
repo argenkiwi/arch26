@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gethomsefe.arch26.R
 import com.gethomsefe.arch26.retainMolecule
+import com.gethomsefe.arch26.retainPresenter
 import kotlinx.coroutines.CoroutineScope
-import org.koin.compose.koinInject
 
 object EditView {
     interface Effects {
@@ -28,7 +28,7 @@ object EditView {
     @Composable
     context(scope: CoroutineScope)
     fun Pane(modifier: Modifier = Modifier, count: Int = 0, effects: Effects) {
-        val presenter = koinInject<EditModel.Presenter>()
+        val presenter = retainPresenter<EditModel.Presenter>()
         val stateFlow = retainMolecule(count) { presenter.invoke(count) }
         val state by stateFlow.collectAsStateWithLifecycle()
         Pane(modifier, state, effects)

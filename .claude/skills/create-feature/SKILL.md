@@ -276,15 +276,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gethomsefe.arch26.retainMolecule
+import com.gethomsefe.arch26.retainPresenter
 import kotlinx.coroutines.CoroutineScope
-import org.koin.compose.koinInject
 
 object WeatherView {
 
     @Composable
     context(scope: CoroutineScope)
     fun Pane(modifier: Modifier = Modifier) {
-        val presenter = koinInject<WeatherModel.Presenter>()
+        val presenter = retainPresenter<WeatherModel.Presenter>()
         val stateFlow = retainMolecule { presenter.invoke() }
         val state by stateFlow.collectAsStateWithLifecycle()
         Pane(modifier, state)

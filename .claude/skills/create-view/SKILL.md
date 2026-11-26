@@ -15,7 +15,7 @@ This skill guides the creation of a `<FeatureName>View` Compose screen that conn
 A View is a Kotlin `object` containing:
 
 1. **`Effects` / `Effect`** (optional): A `sealed interface Effect` or `interface Effects` for one-shot outbound events — navigation, returning a value, etc. Only needed when the screen communicates back to the caller.
-2. **Connected `Pane`**: A `@Composable` function with `context(scope: CoroutineScope)` that injects the presenter via Koin, creates the retained `StateFlow` via `retainMolecule`, collects it, and delegates to the stateless Pane.
+2. **Connected `Pane`**: A `@Composable` function with `context(scope: CoroutineScope)` that obtains the presenter via `retainPresenter` (Koin, resolved once inside `retain`), creates the retained `StateFlow` via `retainMolecule`, collects it, and delegates to the stateless Pane.
 3. **Stateless `Pane`**: A `@Composable` function that takes `state: <FeatureName>Model.State` directly. This is the function that contains the actual layout logic and is independently previewable/testable.
 
 ```
@@ -53,15 +53,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gethomsefe.arch26.retainMolecule
+import com.gethomsefe.arch26.retainPresenter
 import kotlinx.coroutines.CoroutineScope
-import org.koin.compose.koinInject
 
 object <FeatureName>View {
 
     @Composable
     context(scope: CoroutineScope)
     fun Pane(modifier: Modifier = Modifier) {
-        val presenter = koinInject<<FeatureName>Model.Presenter>()
+        val presenter = retainPresenter<<FeatureName>Model.Presenter>()
         val stateFlow = retainMolecule { presenter.invoke() }
         val state by stateFlow.collectAsStateWithLifecycle()
         Pane(modifier, state)
@@ -85,8 +85,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gethomsefe.arch26.retainMolecule
+import com.gethomsefe.arch26.retainPresenter
 import kotlinx.coroutines.CoroutineScope
-import org.koin.compose.koinInject
 
 object <FeatureName>View {
     sealed interface Effect {
@@ -97,7 +97,7 @@ object <FeatureName>View {
     @Composable
     context(scope: CoroutineScope)
     fun Pane(modifier: Modifier = Modifier, initialArg: ArgType, produce: (Effect) -> Unit) {
-        val presenter = koinInject<<FeatureName>Model.Presenter>()
+        val presenter = retainPresenter<<FeatureName>Model.Presenter>()
         val stateFlow = retainMolecule(initialArg) { presenter.invoke(initialArg) }
         val state by stateFlow.collectAsStateWithLifecycle()
         Pane(modifier, state, produce)
@@ -123,7 +123,7 @@ object <FeatureName>View {
     @Composable
     context(scope: CoroutineScope)
     fun Pane(modifier: Modifier = Modifier, initialArg: ArgType, effects: Effects) {
-        val presenter = koinInject<<FeatureName>Model.Presenter>()
+        val presenter = retainPresenter<<FeatureName>Model.Presenter>()
         val stateFlow = retainMolecule(initialArg) { presenter.invoke(initialArg) }
         val state by stateFlow.collectAsStateWithLifecycle()
         Pane(modifier, state, effects)
@@ -214,7 +214,8 @@ Route.List -> NavEntry(route) {
 
 ## Key Rules
 
-- **Never** put navigation logic or `koinInject` in the stateless Pane — it must remain pure.
+- **Never** put navigation logic or `retainPresenter` in the stateless Pane — it must remain pure.
+- **Always** resolve the presenter with `retainPresenter<...>()`, never `koinInject()`. `koinInject` re-resolves a `@Factory` on every recomposition (and `retain` then discards it); `retainPresenter` reads `currentKoinScope()` and calls `get()` inside `retain`, so it resolves once and survives configuration changes.
 - **Always** pass `retainMolecule` keys matching the presenter args so the flow is recreated when args change (e.g., `retainMolecule(count) { presenter.invoke(count) }`).
 - `context(scope: CoroutineScope)` is a Kotlin context parameter — the `CoroutineScope` is provided by the `retain { CoroutineScope(AndroidUiDispatcher.Main) }` block in `MainActivity`.
 - `@OptIn(ExperimentalMaterial3Api::class)` is required on functions that use `PullToRefreshBox`.
@@ -247,15 +248,15 @@ import com.gethomsefe.arch26.Done
 import com.gethomsefe.arch26.Idle
 import com.gethomsefe.arch26.Loader
 import com.gethomsefe.arch26.retainMolecule
+import com.gethomsefe.arch26.retainPresenter
 import kotlinx.coroutines.CoroutineScope
-import org.koin.compose.koinInject
 
 object SlotsView {
 
     @Composable
     context(scope: CoroutineScope)
     fun Pane(modifier: Modifier = Modifier) {
-        val presenter = koinInject<SlotsModel.Presenter>()
+        val presenter = retainPresenter<SlotsModel.Presenter>()
         val stateFlow = retainMolecule { presenter.invoke() }
         val state by stateFlow.collectAsStateWithLifecycle()
         Pane(modifier, state)

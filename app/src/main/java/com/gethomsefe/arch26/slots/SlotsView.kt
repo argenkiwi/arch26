@@ -23,15 +23,15 @@ import com.gethomsefe.arch26.Done
 import com.gethomsefe.arch26.Idle
 import com.gethomsefe.arch26.Loader
 import com.gethomsefe.arch26.retainMolecule
+import com.gethomsefe.arch26.retainPresenter
 import kotlinx.coroutines.CoroutineScope
-import org.koin.compose.koinInject
 
 object SlotsView {
 
     @Composable
     context(scope: CoroutineScope)
     fun Pane(modifier: Modifier = Modifier) {
-        val presenter = koinInject<SlotsModel.Presenter>()
+        val presenter = retainPresenter<SlotsModel.Presenter>()
         val stateFlow = retainMolecule { presenter.invoke() }
         val state by stateFlow.collectAsStateWithLifecycle()
         Pane(modifier, state)
